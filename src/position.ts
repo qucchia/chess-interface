@@ -1,21 +1,22 @@
 import Square from "./square";
 import Piece from "./piece";
+import Rank, { Ranks } from "./rank";
 
 interface CastlingInterface {
-  whiteLong: boolean,
-  whiteShort: boolean,
-  blackLong: boolean,
-  blackShort: boolean,
-};
+  whiteLong: boolean;
+  whiteShort: boolean;
+  blackLong: boolean;
+  blackShort: boolean;
+}
 
 interface PositionInterface {
-  fen?: string,
-  startPosition?: boolean,
-  emptyBoard?: boolean
-};
+  fen?: string;
+  startPosition?: boolean;
+  emptyBoard?: boolean;
+}
 
 export default class Position {
-  board: Array<Array<string>>;
+  ranks: Ranks;
   whiteToPlay: boolean;
   castling: CastlingInterface;
   enPassantSquare: Square;
@@ -42,21 +43,38 @@ export default class Position {
     }
 
     // Field 1: Piece placement
-    this.board = fenFields[0].split("/").map((row: string) => {
-      let rowArray: Array<string> = [];
-      row.split("").forEach((letter: string) => {
-        if (parseInt(letter)) {
-          // Empty squares
-          for (let i: number = 0; i < parseInt(letter); i++) {
-            rowArray.push("");
+    let rank = 9;
+    this.ranks = new Ranks(
+      fenFields[0].split("/").map((rowString: string) => {
+        rank--;
+        let rankArray: Array<Square> = [];
+        let fileNumber = 1;
+        rowString.split("").forEach((letter: string) => {
+          if (parseInt(letter)) {
+            // Empty squares
+            for (let i: number = 0; i < parseInt(letter); i++) {
+              rankArray.push(new Square({ rank, fileNumber, position: this }));
+              fileNumber++;
+            }
+          } else {
+            // Piece
+            rankArray.push(
+              new Square({
+                rank,
+                fileNumber,
+                piece: new Piece({
+                  type: letter.toLowerCase(),
+                  isWhite: letter.toUpperCase() === letter,
+                }),
+                position: this,
+              })
+            );
+            fileNumber++;
           }
-        } else {
-          // Piece
-          rowArray.push(letter);
-        }
-      });
-      return rowArray;
-    });
+        });
+        return new Rank(rank, rankArray);
+      })
+    );
 
     // Field 2: Active color
     this.whiteToPlay = fenFields[1] === "w";
@@ -70,7 +88,10 @@ export default class Position {
     };
 
     // Field 4: En passant square
-    this.enPassantSquare = fenFields[3] === "-" ? null : this.getSquare(new Square({ name: fenFields[3] }));
+    this.enPassantSquare =
+      fenFields[3] === "-"
+        ? null
+        : new Square({ name: fenFields[3], position: this });
 
     // Field 5: Halfmove clock
     this.halfmoveClock = parseInt(fenFields[4]);
@@ -79,17 +100,20 @@ export default class Position {
     this.fullmoves = parseInt(fenFields[5]);
   }
 
-  getSquare(square: Square): Square {
-    square.position = this;
-    return square;
+  getSquare(options: {
+    name?: string;
+    rank?: number;
+    file?: string;
+    fileNumber?: number;
+  }): Square {
+    let tempSquare = new Square(options);
+    return this.ranks
+      .getRank(tempSquare.rank)
+      .getSquare({ file: tempSquare.file });
   }
 
-  pieceAtSquare(square: Square): Piece {
-    let letter = this.board[8 - square.rank][square.fileNumber - 1];
-    return letter === "" ? null : new Piece({
-      type: letter.toLowerCase(),
-      isWhite: letter.toUpperCase() === letter
-    });
+  setSquare(square: Square): void {
+    this.ranks.getRank(square.rank).setSquare({ file: square.file }, square);
   }
 }
 

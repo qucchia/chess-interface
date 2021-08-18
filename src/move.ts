@@ -8,7 +8,7 @@ export default class Move {
   to: Square;
   game: Game;
 
-  constructor(options: { uci?: string, san?: string, game?: Game }) {
+  constructor(options: { uci?: string; san?: string; game?: Game }) {
     if (options.uci) {
       this.uci = options.uci;
       this.from = new Square({ name: this.uci.substring(0, 2) });
@@ -22,9 +22,11 @@ export default class Move {
     if (!this.game) {
       throw "Chess Error: Cannot play a move that does not belong to a game";
     }
-    let board = this.game.position.board;
-    board[8 - this.to.rank][this.to.fileNumber - 1] = board[8 - this.from.rank][this.from.fileNumber - 1];
-    board[8 - this.from.rank][this.from.fileNumber - 1] = "";
+    let position = this.game.position;
+    position.getSquare({ name: this.to.name }).piece = position.getSquare({
+      name: this.from.name,
+    }).piece;
+    position.getSquare({ name: this.from.name }).piece = null;
     this.game.moves.push(this);
   }
 }

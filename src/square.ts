@@ -9,7 +9,14 @@ export default class Square {
   position?: Position;
   piece?: Piece;
 
-  constructor(options: { name?: string, rank?: number, file?: string, fileNumber?: number, position?: Position }) {
+  constructor(options: {
+    name?: string;
+    rank?: number;
+    file?: string;
+    fileNumber?: number;
+    position?: Position;
+    piece?: Piece;
+  }) {
     if (options.name) {
       this.name = options.name; // Algebraic name, e.g. e4
       this.rank = parseInt(options.name[1]); // Rank, e.g. 4
@@ -26,16 +33,18 @@ export default class Square {
       } else {
         throw "Chess Error: Missing data for Square";
       }
+      this.name = this.file + this.rank;
     } else {
       throw "Chess Error: Missing data for Square";
     }
 
     if (options.position) {
       this.position = options.position;
-      this.piece = this.position.pieceAtSquare(this);
-      if (this.piece) {
-        this.piece.square = this;
-      }
+    }
+
+    if (options.piece) {
+      this.piece = options.piece;
+      this.piece.square = this;
     }
   }
 }
