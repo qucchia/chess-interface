@@ -1,0 +1,10 @@
+{
+  "name": "chess-interface",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+    "start": "tsc; node out/index.js"
+  },
+  "author": "qucchia",
+  "license": "ISC"
+}
