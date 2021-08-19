@@ -1,12 +1,10 @@
-// Example usage of the module
-import Chess from "./chess";
+import Game from "./game";
+import Move from "./move";
+import Position from "./position";
+import Square from "./square";
+import Piece from "./piece";
 
-// Create a board from starting position
-let myGame = new Chess.Game({ startPosition: true });
-// Play e4
-let e4Move = myGame.createMove({ uci: "e2e4" });
-e4Move.play();
-// Play e5
-let e5Move = myGame.createMove({ uci: "e7e5" });
-e5Move.play();
-console.log(myGame.position.getSquare({ name: "a1" }));
+let startPosition = new Position({ startPosition: true });
+let emptyPosition = new Position({ emptyBoard: true });
+
+export default { Game, Move, Position, Square, Piece, startPosition, emptyPosition };

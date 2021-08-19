@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "start": "tsc; node out/index.js"
+    "test": "node test/index.js"
   },
   "author": "qucchia",
   "license": "ISC"

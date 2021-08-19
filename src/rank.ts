@@ -12,7 +12,8 @@ export default class Rank {
   getSquare(options: { file?: string; fileNumber?: number }): Square {
     return this.squares.find(
       (square) =>
-        square.file === options.file || square.fileNumber === options.fileNumber
+        square.coordinate.file === options.file ||
+        square.coordinate.fileNumber === options.fileNumber
     );
   }
 

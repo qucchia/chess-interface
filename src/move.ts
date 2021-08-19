@@ -1,18 +1,18 @@
 import Game from "./game";
-import Square from "./square";
+import Coordinate from "./coordinate";
 
 export default class Move {
   uci: string;
   san: string;
-  from: Square;
-  to: Square;
+  from: Coordinate;
+  to: Coordinate;
   game: Game;
 
   constructor(options: { uci?: string; san?: string; game?: Game }) {
     if (options.uci) {
       this.uci = options.uci;
-      this.from = new Square({ name: this.uci.substring(0, 2) });
-      this.to = new Square({ name: this.uci.substring(2, 4) });
+      this.from = new Coordinate({ name: this.uci.substring(0, 2) });
+      this.to = new Coordinate({ name: this.uci.substring(2, 4) });
     }
 
     this.game = options.game;

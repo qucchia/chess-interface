@@ -1,4 +1,4 @@
-import Chess from "./chess";
+import Chess from ".";
 
 let allowedColors = ["green", "red", "orange", "blue"];
 
